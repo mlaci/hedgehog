@@ -1,0 +1,16 @@
+{
+  "name": "hedgehog",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "gcloud app deploy",
+    "start": "node index.js"
+  },
+  "author": "mlaci",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "del": "^3.0.0",
+    "express": "^4.15.3"
+  }
+}
