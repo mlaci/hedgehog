@@ -10,7 +10,8 @@ RUN  apt-get update -y  && \
                         gcc-4.8 \
                         g++-4.8 \
                         subversion \
-                        curl
+                        curl \
+                        python
 
 ENV CC gcc-4.8
 ENV CXX g++-4.8
@@ -52,7 +53,7 @@ ADD system_lib-build.js /emscripten/
 RUN nodejs /emscripten/system_lib-build.js && \
 
 # clean up
-RUN apt-get remove --purge -y git cmake ninja-build gcc-4.8 g++-4.8 subversion curl && \
+RUN apt-get remove --purge -y git cmake ninja-build gcc-4.8 g++-4.8 subversion curl python && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
