@@ -6,12 +6,14 @@ SHELL ["/bin/bash", "-c"]
 RUN  apt-get update -y  && \
      apt-get install -y git \
                         cmake \
-                        make \
-                        gcc \
-                        g++ \
+                        ninja-build \
+                        gcc-4.8 \
+                        g++-4.8 \
                         subversion \
-                        curl \
-                        python
+                        curl
+
+ENV CC gcc-4.8
+ENV CXX g++-4.8
 
 # build llvm clang with WebAssembly target
 RUN mkdir -p /build && cd /build && \
@@ -19,16 +21,16 @@ RUN mkdir -p /build && cd /build && \
     mkdir -p /build/llvm/tools && cd /build/llvm/tools && \
     svn export http://llvm.org/svn/llvm-project/cfe/trunk clang && \
     mkdir -p /build/llvm/build && cd /build/llvm/build && \
-    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
-    make && \
-    make install && \
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
+    ninja && \
+    ninja install && \
     rm -rf /build
 
 # build binaryen tools  
 RUN cd / && \
     git clone https://github.com/WebAssembly/binaryen.git && \
     cd /binaryen && \
-    cmake . && make && \
+    cmake -G Ninja . && ninja && \
     cp /binaryen/bin/s2wasm /binaryen/bin/wasm-as /usr/local/bin && \
     rm -rf /binaryen
 
@@ -50,7 +52,7 @@ ADD system_lib-build.js /emscripten/
 RUN nodejs /emscripten/system_lib-build.js && \
 
 # clean up
-RUN apt-get remove --purge -y git cmake make gcc g++ subversion curl python && \
+RUN apt-get remove --purge -y git cmake ninja-build gcc-4.8 g++-4.8 subversion curl && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
