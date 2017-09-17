@@ -16,7 +16,7 @@ RUN mkdir -p /llvm && \
         tar xJ -f /dev/stdin -C /llvm/tools/clang --strip-components=1 && \
     mkdir -p /llvm/build && \
     cd /llvm/build && \
-    cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=gold" -DCMAKE_SHARED_LINKER_FLAGS="-fuse-ld=gold" .. && \
     ninja && \
     ninja install && \
     rm -rf /llvm
