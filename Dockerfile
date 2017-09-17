@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-c"]
 
 # install build tools
 RUN apt-get update -y && \
-    apt-get install -y cmake make gcc g++ curl python xz-utils
+    apt-get install -y cmake ninja-build gcc g++ curl python xz-utils
 
 ENV LLVM_VERSION 5.0.0
 # build llvm with WebAssembly target
@@ -16,9 +16,9 @@ RUN mkdir -p /llvm && \
         tar xJ -f /dev/stdin -C /llvm/tools/clang --strip-components=1 && \
     mkdir -p /llvm/build && \
     cd /llvm/build && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
-    make && \
-    make install && \
+    cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
+    ninja && \
+    ninja install && \
     rm -rf /llvm
 
 ENV BINARYEN_VERSION 1.37.20
@@ -45,7 +45,7 @@ ADD system_lib-build.js /emscripten/
 RUN nodejs /emscripten/system_lib-build.js
 
 # clean up
-RUN apt-get remove --purge -y cmake make subversion curl python xz-utils && \
+RUN apt-get remove --purge -y cmake ninja-build subversion curl python xz-utils && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
