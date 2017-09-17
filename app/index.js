@@ -81,7 +81,7 @@ app.post('/', async (req, res) => {
 
 //GET request
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello, send some grafika homework!')
 })
 
 const server = app.listen(8080)

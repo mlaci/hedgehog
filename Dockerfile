@@ -2,12 +2,12 @@ FROM ubuntu
 
 SHELL ["/bin/bash", "-c"]
 
-# build tools
+# install build tools
 RUN apt-get update -y && \
-    apt-get install -y cmake make gcc g++ subversion curl python xz-utils
+    apt-get install -y cmake make gcc g++ curl python xz-utils
 
 ENV LLVM_VERSION 5.0.0
-# build llvm clang with WebAssembly target
+# build llvm with WebAssembly target
 RUN mkdir -p /llvm && \
     curl -L http://releases.llvm.org/${LLVM_VERSION}/llvm-${LLVM_VERSION}.src.tar.xz | \
         tar xJ -f /dev/stdin -C /llvm --strip-components=1 && \
@@ -16,11 +16,10 @@ RUN mkdir -p /llvm && \
         tar xJ -f /dev/stdin -C /llvm/tools/clang --strip-components=1 && \
     mkdir -p /llvm/build && \
     cd /llvm/build && \
-    cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
-    make opt llc llvm-ar llvm-link && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD= -DLLVM_EXPERIMENTAL_TARGETS_TO_BUILD=WebAssembly .. && \
+    make && \
     make install && \
     rm -rf /llvm
-# -DLLVM_TARGETS_TO_BUILD= --no-install-recommends -j $(nproc) curl -L http://releases.llvm.org/5.0.0/clang+llvm-5.0.0-linux-x86_64-ubuntu16.04.tar.xz -o clang+llvm-5.0.0-linux-x86_64-ubuntu16.04.tar.xz
 
 ENV BINARYEN_VERSION 1.37.20
 # download binaryen tools
