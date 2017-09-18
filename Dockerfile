@@ -6,6 +6,8 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update -y && \
     apt-get install -y cmake ninja-build clang curl python xz-utils
 
+ENV CC clang
+ENV CXX clang++
 ENV LLVM_VERSION 5.0.0
 # build llvm with WebAssembly target
 RUN mkdir -p /llvm && \
